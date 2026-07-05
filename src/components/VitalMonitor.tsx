@@ -3,6 +3,7 @@
 import React from 'react';
 import { useGameStore } from '@/lib/store';
 import { Heart, Activity, Wind, Thermometer } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 function getSeverity(type: 'hr' | 'spo2' | 'bp' | 'rr', value: number): 'normal' | 'warning' | 'danger' | 'critical' {
     if (type === 'hr') {
@@ -62,6 +63,7 @@ function VitalRow({ icon, label, value, severity }: VitalRowProps) {
 
 export const VitalMonitor: React.FC = () => {
     const { currentStats, healthBar, score, elapsedMinutes, scenario } = useGameStore();
+    const { t } = useTranslation();
     const sys = parseInt(currentStats.bp.split('/')[0]) || 0;
 
     const hrSev = getSeverity('hr', currentStats.hr);
@@ -78,7 +80,7 @@ export const VitalMonitor: React.FC = () => {
             <div className="card p-3 space-y-3">
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-[var(--color-text-3)]">Patient Health</span>
+                        <span className="text-xs text-[var(--color-text-3)]">{t('patient_health')}</span>
                         <span className="text-xs font-mono font-bold" style={{ color: hpColor }}>{healthBar}%</span>
                     </div>
                     <div className="h-2 rounded-full bg-[var(--color-surface-2)] overflow-hidden">
@@ -92,7 +94,7 @@ export const VitalMonitor: React.FC = () => {
                 {scenario && (
                     <div>
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs text-[var(--color-text-3)]">Time</span>
+                            <span className="text-xs text-[var(--color-text-3)]">{t('time')}</span>
                             <span className="text-xs font-mono text-[var(--color-text-2)]">{Math.floor(elapsedMinutes)}/{scenario.time_limit_minutes}m</span>
                         </div>
                         <div className="h-1.5 rounded-full bg-[var(--color-surface-2)] overflow-hidden">
@@ -105,17 +107,17 @@ export const VitalMonitor: React.FC = () => {
                 )}
 
                 <div className="flex items-center justify-between pt-1 border-t border-[var(--color-border)]">
-                    <span className="text-xs text-[var(--color-text-3)]">Score</span>
+                    <span className="text-xs text-[var(--color-text-3)]">{t('score')}</span>
                     <span className="text-xs font-mono font-bold text-[var(--color-accent-yellow)]">{score}</span>
                 </div>
             </div>
 
             {/* Vitals */}
             <div className="space-y-1.5">
-                <VitalRow icon={<Heart className="w-3.5 h-3.5" />} label="Heart Rate" value={`${currentStats.hr} bpm`} severity={hrSev} />
-                <VitalRow icon={<Activity className="w-3.5 h-3.5" />} label="Blood Pressure" value={currentStats.bp} severity={bpSev} />
-                <VitalRow icon={<Wind className="w-3.5 h-3.5" />} label="SpO2" value={`${currentStats.spo2}%`} severity={spo2Sev} />
-                <VitalRow icon={<Wind className="w-3.5 h-3.5" />} label="Resp. Rate" value={`${currentStats.rr}/min`} severity={rrSev} />
+                <VitalRow icon={<Heart className="w-3.5 h-3.5" />} label={t('hr')} value={`${currentStats.hr} bpm`} severity={hrSev} />
+                <VitalRow icon={<Activity className="w-3.5 h-3.5" />} label={t('bp')} value={currentStats.bp} severity={bpSev} />
+                <VitalRow icon={<Wind className="w-3.5 h-3.5" />} label={t('spo2')} value={`${currentStats.spo2}%`} severity={spo2Sev} />
+                <VitalRow icon={<Wind className="w-3.5 h-3.5" />} label={t('rr')} value={`${currentStats.rr}/min`} severity={rrSev} />
                 {currentStats.gcs < 15 && (
                     <VitalRow icon={<Thermometer className="w-3.5 h-3.5" />} label="GCS" value={`${currentStats.gcs}/15`} severity={currentStats.gcs < 9 ? 'critical' : currentStats.gcs < 13 ? 'danger' : 'warning'} />
                 )}

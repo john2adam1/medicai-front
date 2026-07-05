@@ -45,6 +45,7 @@ interface GameStore {
     setDurationMinutes: (minutes: number) => void;
     startSimulation: () => Promise<void>;
     sendAction: (action: string) => Promise<void>;
+    endSimulation: () => Promise<void>;
     updateTime: (minutes: number) => void;
     resetGame: () => void;
 }
@@ -173,6 +174,57 @@ export const useGameStore = create<GameStore>((set, get) => ({
             console.error(err);
             const errMsg: ChatMessage = { id: uid(), role: 'assistant', content: 'Error processing action. Please try again.', metadata: { feedback_type: 'error' } };
             set((s) => ({ isProcessing: false, messages: [...s.messages, errMsg] }));
+        }
+    },
+
+    endSimulation: async () => {
+        const state = get();
+        if (!state.scenario || state.isGameOver || state.isProcessing) return;
+
+        set({ isProcessing: true });
+        try {
+            const res = await fetch(`${API}/action`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: "[SYSTEM MESSAGE]: The user explicitly requested to end the simulation early. Evaluate their completed actions and provide a final feedback regarding this decision. Deduct some points for failing to provide complete care.",
+                    scenario: state.scenario,
+                    currentStats: state.currentStats,
+                    currentVisual: state.currentVisual,
+                    healthBar: state.healthBar,
+                    elapsedMinutes: state.elapsedMinutes,
+                    actionHistory: state.actionHistory.slice(-5),
+                }),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const result: ActionResult = await res.json();
+
+            const aiMsg: ChatMessage = {
+                id: uid(),
+                role: 'assistant',
+                content: `(Simulation Ended Early)\n\n${result.medical_text}\n\n${result.feedback}`,
+                metadata: {
+                    feedback_type: result.feedback_type,
+                    score_impact: result.score_impact - 15,
+                    health_bar: result.health_bar,
+                },
+            };
+
+            set((s) => ({
+                isProcessing: false,
+                currentStats: result.patient_stats,
+                currentVisual: result.visual_state,
+                healthBar: result.health_bar,
+                score: Math.max(0, s.score + result.score_impact - 15),
+                simulationStatus: result.simulation_status === 'in_progress' ? 'failed' : result.simulation_status,
+                isAlive: result.is_alive,
+                isGameOver: true,
+                gameOverReason: 'User ended simulation early.',
+                messages: [...s.messages, aiMsg],
+            }));
+        } catch (err) {
+            console.error(err);
+            set({ isProcessing: false, isGameOver: true, gameOverReason: 'Ended early manually.' });
         }
     },
 

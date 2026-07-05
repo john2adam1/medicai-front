@@ -2,22 +2,26 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useGameStore } from '@/lib/store';
-import { Send, Mic, MicOff, Bot, User, Stethoscope } from 'lucide-react';
+import { Send, Mic, MicOff, Bot, User, Stethoscope, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChatMessage } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 
 function FeedbackBadge({ type }: { type: string }) {
-    const map: Record<string, { label: string; cls: string }> = {
-        success: { label: 'Correct', cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
-        error: { label: 'Incorrect', cls: 'bg-rose-500/10 text-rose-600 border-rose-500/20' },
-        warning: { label: 'Caution', cls: 'bg-amber-500/10 text-amber-700 border-amber-500/20' },
-        info: { label: 'Info', cls: 'bg-[#0284c7]/10 text-[#0284c7] border-[#0284c7]/20' },
+    const { t } = useTranslation();
+    const map: Record<string, { labelKey: string; cls: string }> = {
+        success: { labelKey: 'feedback_correct', cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+        error: { labelKey: 'feedback_incorrect', cls: 'bg-rose-500/10 text-rose-600 border-rose-500/20' },
+        warning: { labelKey: 'feedback_caution', cls: 'bg-amber-500/10 text-amber-700 border-amber-500/20' },
+        info: { labelKey: 'feedback_info', cls: 'bg-[#0284c7]/10 text-[#0284c7] border-[#0284c7]/20' },
     };
-    const { label, cls } = map[type] || map.info;
-    return <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cls}`}>{label}</span>;
+    const { labelKey, cls } = map[type] || map.info;
+    return <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cls}`}>{t(labelKey as any)}</span>;
 }
 
 function MessageBubble({ msg }: { msg: ChatMessage }) {
+    const { t } = useTranslation();
+
     if (msg.role === 'system') {
         return (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
@@ -25,7 +29,7 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
                     <Stethoscope className="w-4 h-4 text-[#0284c7]" />
                 </div>
                 <div className="bubble-system flex-1">
-                    <p className="text-[10px] font-bold text-[#0284c7] uppercase tracking-wider mb-1">Initial Presentation</p>
+                    <p className="text-[10px] font-bold text-[#0284c7] uppercase tracking-wider mb-1">{t('initial_present')}</p>
                     <p className="text-sm text-[var(--color-text)] leading-relaxed">{msg.content}</p>
                 </div>
             </motion.div>
@@ -53,8 +57,8 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
     return (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border ${feedbackType === 'error' ? 'bg-rose-500/10 border-rose-500/20' :
-                    feedbackType === 'success' ? 'bg-emerald-500/10 border-emerald-500/20' :
-                        'bg-[var(--color-surface-2)] border-[var(--color-border)]'
+                feedbackType === 'success' ? 'bg-emerald-500/10 border-emerald-500/20' :
+                    'bg-[var(--color-surface-2)] border-[var(--color-border)]'
                 }`}>
                 <Bot className={`w-4 h-4 ${feedbackType === 'error' ? 'text-rose-600' : feedbackType === 'success' ? 'text-emerald-500' : 'text-[var(--color-text-3)]'}`} />
             </div>
@@ -74,12 +78,13 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
 }
 
 export const ChatInterface: React.FC = () => {
+    const { t } = useTranslation();
     const [input, setInput] = useState('');
     const [isListening, setIsListening] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { messages, sendAction, isProcessing, isGameOver, scenario } = useGameStore();
+    const { messages, sendAction, endSimulation, isProcessing, isGameOver, scenario } = useGameStore();
 
     useEffect(() => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -117,6 +122,13 @@ export const ChatInterface: React.FC = () => {
                         <h3 className="text-sm font-semibold text-[var(--color-text)]">{scenario.title}</h3>
                         <p className="text-xs text-[var(--color-text-3)]">{scenario.difficulty} · {scenario.topic}</p>
                     </div>
+                    <button
+                        onClick={endSimulation}
+                        disabled={isGameOver || isProcessing}
+                        className="btn-icon w-8 h-8 hover:bg-rose-500/10 hover:text-rose-600 disabled:opacity-30 disabled:cursor-not-allowed text-rose-500/70"
+                        title="End Simulation">
+                        <Power className="w-4 h-4" />
+                    </button>
                 </div>
             )}
 
@@ -143,7 +155,7 @@ export const ChatInterface: React.FC = () => {
                 {isGameOver && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         className="p-3 rounded-xl text-center text-sm text-[var(--color-text-2)] border border-[var(--color-border)] bg-[var(--color-surface-2)]">
-                        Simulation ended
+                        {t('sim_ended')}
                     </motion.div>
                 )}
             </div>
@@ -161,7 +173,7 @@ export const ChatInterface: React.FC = () => {
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={isProcessing ? 'Analyzing...' : isGameOver ? 'Simulation ended' : 'Enter action (e.g. Give aspirin 300mg, Check ECG...)'}
+                        placeholder={isProcessing ? t('analyzing') : isGameOver ? t('sim_ended') : t('action_placeholder')}
                         className="chat-input flex-1"
                         disabled={isGameOver || isProcessing}
                     />
@@ -170,7 +182,7 @@ export const ChatInterface: React.FC = () => {
                         <Send className="w-4 h-4" />
                     </button>
                 </form>
-                <p className="text-[10px] text-[var(--color-text-3)] mt-2 px-1">Type any clinical action — diagnosis, medications, procedures</p>
+                <p className="text-[10px] text-[var(--color-text-3)] mt-2 px-1">{t('action_hint')}</p>
             </div>
         </div>
     );
