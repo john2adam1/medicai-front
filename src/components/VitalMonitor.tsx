@@ -52,7 +52,7 @@ function VitalRow({ icon, label, value, severity }: VitalRowProps) {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span style={{ color }} className="flex-shrink-0">{icon}</span>
-                    <span className="text-xs text-[#606060] font-medium">{label}</span>
+                    <span className="text-xs text-[var(--color-text-3)] font-medium">{label}</span>
                 </div>
                 <span className="font-mono font-bold text-sm" style={{ color }}>{value}</span>
             </div>
@@ -78,10 +78,10 @@ export const VitalMonitor: React.FC = () => {
             <div className="card p-3 space-y-3">
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-[#606060]">Patient Health</span>
+                        <span className="text-xs text-[var(--color-text-3)]">Patient Health</span>
                         <span className="text-xs font-mono font-bold" style={{ color: hpColor }}>{healthBar}%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-[#222] overflow-hidden">
+                    <div className="h-2 rounded-full bg-[var(--color-surface-2)] overflow-hidden">
                         <div
                             className="h-full rounded-full transition-all duration-700"
                             style={{ width: `${healthBar}%`, background: hpColor }}
@@ -92,21 +92,21 @@ export const VitalMonitor: React.FC = () => {
                 {scenario && (
                     <div>
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs text-[#606060]">Time</span>
-                            <span className="text-xs font-mono text-[#a0a0a0]">{Math.floor(elapsedMinutes)}/{scenario.time_limit_minutes}m</span>
+                            <span className="text-xs text-[var(--color-text-3)]">Time</span>
+                            <span className="text-xs font-mono text-[var(--color-text-2)]">{Math.floor(elapsedMinutes)}/{scenario.time_limit_minutes}m</span>
                         </div>
-                        <div className="h-1.5 rounded-full bg-[#222] overflow-hidden">
+                        <div className="h-1.5 rounded-full bg-[var(--color-surface-2)] overflow-hidden">
                             <div
-                                className="h-full rounded-full transition-all duration-700 bg-[#73d2de]"
+                                className="h-full rounded-full transition-all duration-700 bg-[var(--color-accent-blue)]"
                                 style={{ width: `${timeProgress}%` }}
                             />
                         </div>
                     </div>
                 )}
 
-                <div className="flex items-center justify-between pt-1 border-t border-[rgba(255,255,255,0.05)]">
-                    <span className="text-xs text-[#606060]">Score</span>
-                    <span className="text-xs font-mono font-bold text-[#ffd166]">{score}</span>
+                <div className="flex items-center justify-between pt-1 border-t border-[var(--color-border)]">
+                    <span className="text-xs text-[var(--color-text-3)]">Score</span>
+                    <span className="text-xs font-mono font-bold text-[var(--color-accent-yellow)]">{score}</span>
                 </div>
             </div>
 

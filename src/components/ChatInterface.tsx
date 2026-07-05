@@ -8,10 +8,10 @@ import { ChatMessage } from '@/lib/types';
 
 function FeedbackBadge({ type }: { type: string }) {
     const map: Record<string, { label: string; cls: string }> = {
-        success: { label: 'Correct', cls: 'bg-[#06d6a0]/10 text-[#06d6a0] border-[#06d6a0]/20' },
-        error: { label: 'Incorrect', cls: 'bg-[#ef476f]/10 text-[#ef476f] border-[#ef476f]/20' },
-        warning: { label: 'Caution', cls: 'bg-[#ffd166]/10 text-[#ffd166] border-[#ffd166]/20' },
-        info: { label: 'Info', cls: 'bg-[#73d2de]/10 text-[#73d2de] border-[#73d2de]/20' },
+        success: { label: 'Correct', cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+        error: { label: 'Incorrect', cls: 'bg-rose-500/10 text-rose-600 border-rose-500/20' },
+        warning: { label: 'Caution', cls: 'bg-amber-500/10 text-amber-700 border-amber-500/20' },
+        info: { label: 'Info', cls: 'bg-[#0284c7]/10 text-[#0284c7] border-[#0284c7]/20' },
     };
     const { label, cls } = map[type] || map.info;
     return <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cls}`}>{label}</span>;
@@ -21,12 +21,12 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
     if (msg.role === 'system') {
         return (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#73d2de]/10 border border-[#73d2de]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Stethoscope className="w-4 h-4 text-[#73d2de]" />
+                <div className="w-8 h-8 rounded-full bg-[#0284c7]/10 border border-[#0284c7]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Stethoscope className="w-4 h-4 text-[#0284c7]" />
                 </div>
                 <div className="bubble-system flex-1">
-                    <p className="text-[10px] font-bold text-[#73d2de] uppercase tracking-wider mb-1">Initial Presentation</p>
-                    <p className="text-sm text-[#f0f0f0] leading-relaxed">{msg.content}</p>
+                    <p className="text-[10px] font-bold text-[#0284c7] uppercase tracking-wider mb-1">Initial Presentation</p>
+                    <p className="text-sm text-[var(--color-text)] leading-relaxed">{msg.content}</p>
                 </div>
             </motion.div>
         );
@@ -38,8 +38,8 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
                 <div className="bubble-user">
                     <p className="text-sm">{msg.content}</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#06d6a0]/10 border border-[#06d6a0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="w-4 h-4 text-[#06d6a0]" />
+                <div className="w-8 h-8 rounded-full bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <User className="w-4 h-4 text-[var(--color-accent)]" />
                 </div>
             </motion.div>
         );
@@ -48,27 +48,26 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
     const feedbackType = msg.metadata?.feedback_type;
     const borderCls = feedbackType === 'success' ? 'border-[#06d6a0]/20' :
         feedbackType === 'error' ? 'border-[#ef476f]/20' :
-        feedbackType === 'warning' ? 'border-[#ffd166]/20' : '';
+            feedbackType === 'warning' ? 'border-[#ffd166]/20' : '';
 
     return (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border ${
-                feedbackType === 'error' ? 'bg-[#ef476f]/10 border-[#ef476f]/20' :
-                feedbackType === 'success' ? 'bg-[#06d6a0]/10 border-[#06d6a0]/20' :
-                'bg-[#1a1a1a] border-[rgba(255,255,255,0.08)]'
-            }`}>
-                <Bot className={`w-4 h-4 ${feedbackType === 'error' ? 'text-[#ef476f]' : feedbackType === 'success' ? 'text-[#06d6a0]' : 'text-[#a0a0a0]'}`} />
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border ${feedbackType === 'error' ? 'bg-rose-500/10 border-rose-500/20' :
+                    feedbackType === 'success' ? 'bg-emerald-500/10 border-emerald-500/20' :
+                        'bg-[var(--color-surface-2)] border-[var(--color-border)]'
+                }`}>
+                <Bot className={`w-4 h-4 ${feedbackType === 'error' ? 'text-rose-600' : feedbackType === 'success' ? 'text-emerald-500' : 'text-[var(--color-text-3)]'}`} />
             </div>
             <div className={`bubble-ai flex-1 ${borderCls}`}>
                 <div className="flex items-center gap-2 mb-2">
                     {feedbackType && <FeedbackBadge type={feedbackType} />}
                     {msg.metadata?.score_impact !== undefined && (
-                        <span className={`text-[10px] font-mono font-bold ${msg.metadata.score_impact >= 0 ? 'text-[#06d6a0]' : 'text-[#ef476f]'}`}>
+                        <span className={`text-[10px] font-mono font-bold ${msg.metadata.score_impact >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                             {msg.metadata.score_impact >= 0 ? '+' : ''}{msg.metadata.score_impact} pts
                         </span>
                     )}
                 </div>
-                <p className="text-sm text-[#f0f0f0] leading-relaxed whitespace-pre-line">{msg.content}</p>
+                <p className="text-sm text-[var(--color-text)] leading-relaxed whitespace-pre-line">{msg.content}</p>
             </div>
         </motion.div>
     );
@@ -113,10 +112,10 @@ export const ChatInterface: React.FC = () => {
         <div className="flex flex-col h-full">
             {/* Scenario header */}
             {scenario && (
-                <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.05)] flex items-center justify-between flex-shrink-0">
+                <div className="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between flex-shrink-0">
                     <div>
-                        <h3 className="text-sm font-semibold text-[#f0f0f0]">{scenario.title}</h3>
-                        <p className="text-xs text-[#606060]">{scenario.difficulty} · {scenario.topic}</p>
+                        <h3 className="text-sm font-semibold text-[var(--color-text)]">{scenario.title}</h3>
+                        <p className="text-xs text-[var(--color-text-3)]">{scenario.difficulty} · {scenario.topic}</p>
                     </div>
                 </div>
             )}
@@ -127,13 +126,13 @@ export const ChatInterface: React.FC = () => {
 
                 {isProcessing && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] flex items-center justify-center flex-shrink-0">
-                            <Bot className="w-4 h-4 text-[#a0a0a0]" />
+                        <div className="w-8 h-8 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center flex-shrink-0">
+                            <Bot className="w-4 h-4 text-[var(--color-text-3)]" />
                         </div>
                         <div className="bubble-ai">
                             <div className="flex gap-1 items-center">
                                 {[0, 0.15, 0.3].map((d, i) => (
-                                    <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-[#06d6a0]"
+                                    <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"
                                         animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: d }} />
                                 ))}
                             </div>
@@ -143,14 +142,14 @@ export const ChatInterface: React.FC = () => {
 
                 {isGameOver && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        className="p-3 rounded-xl text-center text-sm text-[#a0a0a0] border border-[rgba(255,255,255,0.06)] bg-[#1a1a1a]">
+                        className="p-3 rounded-xl text-center text-sm text-[var(--color-text-2)] border border-[var(--color-border)] bg-[var(--color-surface-2)]">
                         Simulation ended
                     </motion.div>
                 )}
             </div>
 
             {/* Input area */}
-            <div className="p-3 border-t border-[rgba(255,255,255,0.05)] flex-shrink-0">
+            <div className="p-3 border-t border-[var(--color-border)] flex-shrink-0">
                 <form onSubmit={handleSend} className="flex gap-2">
                     <button type="button" onClick={toggleVoice}
                         className={`btn-icon flex-shrink-0 ${isListening ? 'bg-[#ef476f]/20 border-[#ef476f]/40 text-[#ef476f]' : ''}`}
@@ -167,11 +166,11 @@ export const ChatInterface: React.FC = () => {
                         disabled={isGameOver || isProcessing}
                     />
                     <button type="submit" disabled={!input.trim() || isGameOver || isProcessing}
-                        className="btn-icon flex-shrink-0 bg-[#06d6a0] border-[#06d6a0] text-[#0f0f0f] hover:bg-[#05c090] disabled:opacity-30 disabled:cursor-not-allowed">
+                        className="btn-icon flex-shrink-0 bg-[var(--color-accent)] border-[var(--color-accent)] text-[#ffffff] hover:brightness-110 disabled:opacity-30 disabled:cursor-not-allowed">
                         <Send className="w-4 h-4" />
                     </button>
                 </form>
-                <p className="text-[10px] text-[#606060] mt-2 px-1">Type any clinical action — diagnosis, medications, procedures</p>
+                <p className="text-[10px] text-[var(--color-text-3)] mt-2 px-1">Type any clinical action — diagnosis, medications, procedures</p>
             </div>
         </div>
     );

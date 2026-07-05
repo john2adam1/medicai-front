@@ -19,7 +19,7 @@ export default function Home() {
     }, [scenario, isGameOver, updateTime]);
 
     return (
-        <main className="min-h-screen bg-[#0f0f0f] text-[#f0f0f0]">
+        <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
             <AnimatePresence mode="wait">
                 {!scenario ? (
                     <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -30,11 +30,11 @@ export default function Home() {
                         className="flex h-screen overflow-hidden">
 
                         {/* Left panel */}
-                        <aside className="w-[260px] flex-shrink-0 border-r border-[rgba(255,255,255,0.06)] flex flex-col overflow-y-auto">
+                        <aside className="w-[260px] flex-shrink-0 border-r border-[var(--color-border)] flex flex-col overflow-y-auto bg-[var(--color-surface)]">
                             {/* Header */}
-                            <div className="p-3 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between flex-shrink-0">
+                            <div className="p-3 border-b border-[var(--color-border)] flex items-center justify-between flex-shrink-0">
                                 <div className="flex items-center gap-2">
-                                    <Heart className="w-4 h-4 text-[#06d6a0] animate-heartbeat" />
+                                    <Heart className="w-4 h-4 text-[var(--color-accent)] animate-heartbeat" />
                                     <span className="text-sm font-bold">MedicAI</span>
                                 </div>
                                 <button onClick={resetGame}
@@ -63,7 +63,7 @@ export default function Home() {
             <AnimatePresence>
                 {isGameOver && scenario && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0f172a]/40 backdrop-blur-xs">
                         <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
                             className="card w-full max-w-sm p-8 text-center">
                             <div className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-5 ${isAlive ? 'bg-[#06d6a0]/10' : 'bg-[#ef476f]/10'}`}>
@@ -72,15 +72,15 @@ export default function Home() {
                             <h2 className="text-xl font-bold mb-2">
                                 {simulationStatus === 'success' ? 'Patient Stabilized' : isAlive ? 'Simulation Over' : 'Patient Deceased'}
                             </h2>
-                            <p className="text-sm text-[#a0a0a0] mb-6">{gameOverReason}</p>
+                            <p className="text-sm text-[var(--color-text-2)] mb-6">{gameOverReason}</p>
                             <div className="grid grid-cols-2 gap-3 mb-6">
-                                <div className="card-sm p-3">
-                                    <p className="text-xs text-[#606060] mb-1">Grade</p>
-                                    <p className="text-xl font-mono font-bold text-[#ffd166]">{getGrade(score)}</p>
+                                <div className="card-sm p-3 bg-[var(--color-surface-2)] border-[var(--color-border)]">
+                                    <p className="text-xs text-[var(--color-text-3)] mb-1">Grade</p>
+                                    <p className="text-xl font-mono font-bold text-[var(--color-accent-yellow)]">{getGrade(score)}</p>
                                 </div>
-                                <div className="card-sm p-3">
-                                    <p className="text-xs text-[#606060] mb-1">Score</p>
-                                    <p className="text-xl font-mono font-bold text-[#73d2de]">{score}</p>
+                                <div className="card-sm p-3 bg-[var(--color-surface-2)] border-[var(--color-border)]">
+                                    <p className="text-xs text-[var(--color-text-3)] mb-1">Score</p>
+                                    <p className="text-xl font-mono font-bold text-[var(--color-accent-blue)]">{score}</p>
                                 </div>
                             </div>
                             <button onClick={resetGame} className="btn btn-green w-full py-3 rounded-xl">

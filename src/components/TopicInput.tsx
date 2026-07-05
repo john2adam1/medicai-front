@@ -48,27 +48,27 @@ export const TopicInput: React.FC = () => {
             >
                 {/* Logo */}
                 <div className="flex items-center gap-3 mb-10">
-                    <div className="w-10 h-10 rounded-xl bg-[#06d6a0]/10 border border-[#06d6a0]/20 flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-[#06d6a0] animate-heartbeat" />
+                    <div className="w-10 h-10 rounded-xl bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-[var(--color-accent)] animate-heartbeat" />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold text-[#f0f0f0]">MedicAI</h1>
-                        <p className="text-xs text-[#606060]">Clinical Simulation</p>
+                        <h1 className="text-lg font-bold text-[var(--color-text)]">MedicAI</h1>
+                        <p className="text-xs text-[var(--color-text-3)]">Clinical Simulation</p>
                     </div>
                 </div>
 
                 {/* Heading */}
-                <h2 className="text-3xl font-bold text-[#f0f0f0] mb-2 leading-tight">
+                <h2 className="text-3xl font-bold text-[var(--color-text)] mb-2 leading-tight">
                     What medical scenario<br />would you like to practice?
                 </h2>
-                <p className="text-[#a0a0a0] mb-8 text-sm">
+                <p className="text-[var(--color-text-2)] mb-8 text-sm">
                     Enter any medical topic — the AI will generate a realistic clinical case for you.
                 </p>
 
                 {/* Input form */}
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <div className="relative">
-                        <Stethoscope className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#606060] pointer-events-none" />
+                        <Stethoscope className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-3)] pointer-events-none" />
                         <input
                             type="text"
                             value={topic}
@@ -84,8 +84,8 @@ export const TopicInput: React.FC = () => {
                     {/* Difficulty selector */}
                     <div>
                         <div className="flex items-center gap-1.5 mb-2">
-                            <Gauge className="w-3.5 h-3.5 text-[#606060]" />
-                            <p className="text-xs text-[#606060] uppercase tracking-wider font-medium">Qiyinlik darajasi</p>
+                            <Gauge className="w-3.5 h-3.5 text-[var(--color-text-3)]" />
+                            <p className="text-xs text-[var(--color-text-3)] uppercase tracking-wider font-medium">Qiyinlik darajasi</p>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                             {DIFFICULTIES.map((d) => (
@@ -94,14 +94,13 @@ export const TopicInput: React.FC = () => {
                                     type="button"
                                     onClick={() => setDifficulty(d.value)}
                                     disabled={isGenerating}
-                                    className={`flex flex-col items-start px-3 py-2 rounded-lg border text-left transition-all disabled:opacity-40 ${
-                                        difficulty === d.value
-                                            ? 'border-[#06d6a0]/50 bg-[#06d6a0]/10 text-[#f0f0f0]'
-                                            : 'border-[rgba(255,255,255,0.08)] text-[#a0a0a0] hover:border-[rgba(255,255,255,0.2)]'
-                                    }`}
+                                    className={`flex flex-col items-start px-3 py-2 rounded-lg border text-left transition-all disabled:opacity-40 ${difficulty === d.value
+                                            ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+                                            : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
+                                        }`}
                                 >
                                     <span className="text-sm font-semibold">{d.label}</span>
-                                    <span className="text-[10px] text-[#606060]">{d.hint}</span>
+                                    <span className="text-[10px] text-[var(--color-text-3)]">{d.hint}</span>
                                 </button>
                             ))}
                         </div>
@@ -110,8 +109,8 @@ export const TopicInput: React.FC = () => {
                     {/* Duration selector */}
                     <div>
                         <div className="flex items-center gap-1.5 mb-2">
-                            <Clock className="w-3.5 h-3.5 text-[#606060]" />
-                            <p className="text-xs text-[#606060] uppercase tracking-wider font-medium">Vaqt chegarasi</p>
+                            <Clock className="w-3.5 h-3.5 text-[var(--color-text-3)]" />
+                            <p className="text-xs text-[var(--color-text-3)] uppercase tracking-wider font-medium">Vaqt chegarasi</p>
                         </div>
                         <div className="grid grid-cols-4 gap-2">
                             {DURATIONS.map((mins) => (
@@ -120,11 +119,10 @@ export const TopicInput: React.FC = () => {
                                     type="button"
                                     onClick={() => setDurationMinutes(mins)}
                                     disabled={isGenerating}
-                                    className={`px-3 py-2 rounded-lg border text-sm font-semibold transition-all disabled:opacity-40 ${
-                                        durationMinutes === mins
-                                            ? 'border-[#06d6a0]/50 bg-[#06d6a0]/10 text-[#f0f0f0]'
-                                            : 'border-[rgba(255,255,255,0.08)] text-[#a0a0a0] hover:border-[rgba(255,255,255,0.2)]'
-                                    }`}
+                                    className={`px-3 py-2 rounded-lg border text-sm font-semibold transition-all disabled:opacity-40 ${durationMinutes === mins
+                                            ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+                                            : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
+                                        }`}
                                 >
                                     {mins} min
                                 </button>
@@ -164,14 +162,14 @@ export const TopicInput: React.FC = () => {
 
                 {/* Suggestions */}
                 <div className="mt-6">
-                    <p className="text-xs text-[#606060] mb-3 uppercase tracking-wider font-medium">Quick suggestions</p>
+                    <p className="text-xs text-[var(--color-text-3)] mb-3 uppercase tracking-wider font-medium">Quick suggestions</p>
                     <div className="flex flex-wrap gap-2">
                         {SUGGESTIONS.map((s) => (
                             <button
                                 key={s}
                                 onClick={() => setTopic(s)}
                                 disabled={isGenerating}
-                                className="px-3 py-1.5 rounded-full text-xs font-medium border border-[rgba(255,255,255,0.08)] text-[#a0a0a0] hover:text-[#f0f0f0] hover:border-[rgba(255,255,255,0.2)] transition-all disabled:opacity-40"
+                                className="px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] transition-all disabled:opacity-40"
                             >
                                 {s}
                             </button>
@@ -190,11 +188,11 @@ export const TopicInput: React.FC = () => {
                         >
                             <div className="scan-line" />
                             <div className="relative z-10 text-center">
-                                <div className="w-16 h-16 rounded-2xl bg-[#06d6a0]/10 border border-[#06d6a0]/20 flex items-center justify-center mx-auto mb-4">
-                                    <Stethoscope className="w-8 h-8 text-[#06d6a0]" />
+                                <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mx-auto mb-4">
+                                    <Stethoscope className="w-8 h-8 text-[var(--color-accent)]" />
                                 </div>
-                                <p className="text-[#06d6a0] font-bold text-lg mb-1">Generating Clinical Case</p>
-                                <p className="text-[#a0a0a0] text-sm">Preparing <span className="text-[#f0f0f0] font-medium">{topic}</span> scenario...</p>
+                                <p className="text-[var(--color-accent)] font-bold text-lg mb-1">Generating Clinical Case</p>
+                                <p className="text-[var(--color-text-2)] text-sm">Preparing <span className="text-[var(--color-text)] font-semibold">{topic}</span> scenario...</p>
                             </div>
                         </motion.div>
                     )}

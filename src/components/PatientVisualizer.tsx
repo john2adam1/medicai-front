@@ -73,8 +73,8 @@ export const PatientVisualizer: React.FC = () => {
 
     const stateColor = !isAlive ? '#555' :
         state === 'Recovery' ? '#06d6a0' :
-        state === 'Pain' || state === 'Seizure' ? '#ef476f' :
-        state === 'Unconscious' ? '#ffd166' : '#73d2de';
+            state === 'Pain' || state === 'Seizure' ? '#ef476f' :
+                state === 'Unconscious' ? '#ffd166' : '#73d2de';
 
     return (
         <div className="patient-container select-none">
@@ -83,13 +83,13 @@ export const PatientVisualizer: React.FC = () => {
                 <div className="w-full flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className={`status-dot ${!isAlive ? 'status-dead' : state === 'Seizure' || state === 'Pain' ? 'status-critical' : state === 'Unconscious' ? 'status-warning' : 'status-alive'}`} />
-                        <span className="text-xs font-semibold text-[#a0a0a0]">{state}</span>
+                        <span className="text-xs font-semibold text-[var(--color-text-2)]">{state}</span>
                     </div>
                     <AnimatePresence mode="wait">
-                        {state === 'Pain' && <motion.div key="pain" initial={{scale:0}} animate={{scale:1}} exit={{scale:0}}><AlertTriangle className="w-4 h-4 text-[#ef476f]" /></motion.div>}
-                        {state === 'Seizure' && <motion.div key="seiz" initial={{scale:0}} animate={{scale:1,rotate:[0,15,-15,0]}} transition={{rotate:{repeat:Infinity,duration:0.3}}} exit={{scale:0}}><Zap className="w-4 h-4 text-[#ffd166] fill-[#ffd166]" /></motion.div>}
-                        {state === 'Recovery' && <motion.div key="rec" initial={{scale:0}} animate={{scale:1,y:[0,-3,0]}} transition={{y:{repeat:Infinity,duration:1.5}}} exit={{scale:0}}><CheckCircle2 className="w-4 h-4 text-[#06d6a0]" /></motion.div>}
-                        {(state === 'Idle' || state === 'Unconscious') && <motion.div key="idle" initial={{scale:0}} animate={{scale:1}} exit={{scale:0}}><HeartPulse className="w-4 h-4" style={{color: stateColor}} /></motion.div>}
+                        {state === 'Pain' && <motion.div key="pain" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}><AlertTriangle className="w-4 h-4 text-[#ef476f]" /></motion.div>}
+                        {state === 'Seizure' && <motion.div key="seiz" initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, 15, -15, 0] }} transition={{ rotate: { repeat: Infinity, duration: 0.3 } }} exit={{ scale: 0 }}><Zap className="w-4 h-4 text-[#ffd166] fill-[#ffd166]" /></motion.div>}
+                        {state === 'Recovery' && <motion.div key="rec" initial={{ scale: 0 }} animate={{ scale: 1, y: [0, -3, 0] }} transition={{ y: { repeat: Infinity, duration: 1.5 } }} exit={{ scale: 0 }}><CheckCircle2 className="w-4 h-4 text-[#06d6a0]" /></motion.div>}
+                        {(state === 'Idle' || state === 'Unconscious') && <motion.div key="idle" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}><HeartPulse className="w-4 h-4" style={{ color: stateColor }} /></motion.div>}
                     </AnimatePresence>
                 </div>
 
@@ -131,7 +131,7 @@ export const PatientVisualizer: React.FC = () => {
                                     rx="5" ry={eyeScaleY === 1 ? undefined : eyeScaleY * 5}
                                     animate={isAlive && state !== 'Unconscious' && state !== 'Dead' ? {
                                         ry: [5, 5, 0.5, 5, 5, 5, 0.5, 5],
-                                        transition: { repeat: Infinity, duration: 4.5, times: [0,0.3,0.35,0.4,0.7,0.75,0.8,1] }
+                                        transition: { repeat: Infinity, duration: 4.5, times: [0, 0.3, 0.35, 0.4, 0.7, 0.75, 0.8, 1] }
                                     } : { ry: eyeScaleY * 5 }}
                                     fill="#1a1a2e"
                                 />
@@ -140,7 +140,7 @@ export const PatientVisualizer: React.FC = () => {
                                     rx="5" ry={eyeScaleY === 1 ? undefined : eyeScaleY * 5}
                                     animate={isAlive && state !== 'Unconscious' && state !== 'Dead' ? {
                                         ry: [5, 5, 5, 0.5, 5, 5, 5, 0.5, 5],
-                                        transition: { repeat: Infinity, duration: 5, times: [0,0.25,0.35,0.4,0.45,0.7,0.8,0.85,1] }
+                                        transition: { repeat: Infinity, duration: 5, times: [0, 0.25, 0.35, 0.4, 0.45, 0.7, 0.8, 0.85, 1] }
                                     } : { ry: eyeScaleY * 5 }}
                                     fill="#1a1a2e"
                                 />
@@ -258,9 +258,9 @@ export const PatientVisualizer: React.FC = () => {
                 </div>
 
                 {/* Skin info */}
-                <div className="w-full flex items-center justify-between text-xs text-[#606060]">
-                    <span>Skin: <span className="text-[#a0a0a0] capitalize">{skin}</span></span>
-                    <span>SpO2: <span className={currentStats.spo2 < 90 ? 'text-[#ef476f]' : 'text-[#06d6a0]'}>{currentStats.spo2}%</span></span>
+                <div className="w-full flex items-center justify-between text-xs text-[var(--color-text-3)]">
+                    <span>Skin: <span className="text-[var(--color-text-2)] capitalize">{skin}</span></span>
+                    <span>SpO2: <span className={currentStats.spo2 < 90 ? 'text-rose-600' : 'text-emerald-600'}>{currentStats.spo2}%</span></span>
                 </div>
             </div>
         </div>

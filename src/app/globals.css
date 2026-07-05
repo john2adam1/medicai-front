@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0f0f0f;
-  --color-surface: #1a1a1a;
-  --color-surface-2: #222222;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.15);
-  --color-accent: #06d6a0;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f5f9;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-strong: rgba(15, 23, 42, 0.16);
+  --color-accent: #dc2626;
   --color-accent-red: #ef476f;
-  --color-accent-yellow: #ffd166;
-  --color-accent-blue: #73d2de;
-  --color-text: #f0f0f0;
-  --color-text-2: #a0a0a0;
-  --color-text-3: #606060;
+  --color-accent-yellow: #d97706;
+  --color-accent-blue: #0284c7;
+  --color-text: #0f172a;
+  --color-text-2: #475569;
+  --color-text-3: #94a3b8;
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
@@ -27,7 +27,7 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-  ::selection { background: rgba(6, 214, 160, 0.25); }
+  ::selection { background: rgba(220, 38, 38, 0.15); }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 2px; }
@@ -138,15 +138,15 @@
 }
 .bubble-user {
   background: var(--color-accent);
-  color: #0f0f0f;
+  color: #ffffff;
   border-radius: 16px 4px 16px 16px;
   padding: 12px 16px;
   max-width: 80%;
   font-weight: 500;
 }
 .bubble-system {
-  background: rgba(115, 210, 222, 0.08);
-  border: 1px solid rgba(115, 210, 222, 0.2);
+  background: rgba(2, 132, 199, 0.06);
+  border: 1px solid rgba(2, 132, 199, 0.16);
   border-radius: 12px;
   padding: 14px 18px;
   max-width: 100%;
@@ -179,7 +179,7 @@
   font-size: 14px; font-weight: 600; transition: all 0.2s;
 }
 .btn-green {
-  background: var(--color-accent); color: #0f0f0f;
+  background: var(--color-accent); color: #ffffff;
 }
 .btn-green:hover { filter: brightness(1.1); }
 .btn-green:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
