@@ -6,11 +6,22 @@ import { TopicInput } from '@/components/TopicInput';
 import { VitalMonitor } from '@/components/VitalMonitor';
 import { PatientVisualizer } from '@/components/PatientVisualizer';
 import { ChatInterface } from '@/components/ChatInterface';
+import QuestionnaireModal from '@/components/QuestionnaireModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Trophy, AlertTriangle, Heart } from 'lucide-react';
+import { RotateCcw, Trophy, AlertTriangle, Heart, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/lib/auth-store';
 
 export default function Home() {
     const { scenario, isGameOver, gameOverReason, simulationStatus, isAlive, score, resetGame, updateTime } = useGameStore();
+    const { token, logout } = useAuthStore();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+        }
+    }, [token, router]);
 
     useEffect(() => {
         if (!scenario || isGameOver) return;
@@ -18,12 +29,15 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [scenario, isGameOver, updateTime]);
 
+    if (!token) return null; // Avoid flashing the home page logic while redirecting
+
     return (
         <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
             <AnimatePresence mode="wait">
                 {!scenario ? (
                     <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <TopicInput />
+                        <QuestionnaireModal />
                     </motion.div>
                 ) : (
                     <motion.div key="sim" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -37,11 +51,18 @@ export default function Home() {
                                     <Heart className="w-4 h-4 text-[var(--color-accent)] animate-heartbeat" />
                                     <span className="text-sm font-bold">MedicAI</span>
                                 </div>
-                                <button onClick={resetGame}
-                                    className="btn-icon w-7 h-7"
-                                    title="New simulation">
-                                    <RotateCcw className="w-3.5 h-3.5" />
-                                </button>
+                                <div className="flex items-center gap-1">
+                                    <button onClick={resetGame}
+                                        className="btn-icon w-7 h-7"
+                                        title="New simulation">
+                                        <RotateCcw className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button onClick={logout}
+                                        className="btn-icon w-7 h-7 text-rose-500 hover:bg-rose-500/10"
+                                        title="Logout">
+                                        <LogOut className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Patient + Vitals */}

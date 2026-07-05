@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useGameStore, Difficulty } from '@/lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Stethoscope, ChevronRight, Loader2, AlertCircle, Heart, Gauge, Clock } from 'lucide-react';
+import { useAuthStore, AIRecommendation } from '@/lib/auth-store';
 
 const DIFFICULTIES: { value: Difficulty; label: string; hint: string }[] = [
     { value: 'Easy', label: 'Oson', hint: 'Klassik, aniq holat' },
@@ -31,6 +32,7 @@ export const TopicInput: React.FC = () => {
         topic, setTopic, isGenerating, generateError, startSimulation,
         difficulty, setDifficulty, durationMinutes, setDurationMinutes,
     } = useGameStore();
+    const { recommendations } = useAuthStore();
     const [focused, setFocused] = useState(false);
 
     const handleSubmit = (e?: React.FormEvent) => {
@@ -95,8 +97,8 @@ export const TopicInput: React.FC = () => {
                                     onClick={() => setDifficulty(d.value)}
                                     disabled={isGenerating}
                                     className={`flex flex-col items-start px-3 py-2 rounded-lg border text-left transition-all disabled:opacity-40 ${difficulty === d.value
-                                            ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
-                                            : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
+                                        ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+                                        : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
                                         }`}
                                 >
                                     <span className="text-sm font-semibold">{d.label}</span>
@@ -120,8 +122,8 @@ export const TopicInput: React.FC = () => {
                                     onClick={() => setDurationMinutes(mins)}
                                     disabled={isGenerating}
                                     className={`px-3 py-2 rounded-lg border text-sm font-semibold transition-all disabled:opacity-40 ${durationMinutes === mins
-                                            ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
-                                            : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
+                                        ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+                                        : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:border-[var(--color-border-strong)]'
                                         }`}
                                 >
                                     {mins} min
@@ -160,22 +162,26 @@ export const TopicInput: React.FC = () => {
                     </button>
                 </form>
 
-                {/* Suggestions */}
-                <div className="mt-6">
-                    <p className="text-xs text-[var(--color-text-3)] mb-3 uppercase tracking-wider font-medium">Quick suggestions</p>
-                    <div className="flex flex-wrap gap-2">
-                        {SUGGESTIONS.map((s) => (
-                            <button
-                                key={s}
-                                onClick={() => setTopic(s)}
-                                disabled={isGenerating}
-                                className="px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-2)] hover:text-[var(--color-text)] hover:border-[var(--color-border-strong)] transition-all disabled:opacity-40"
-                            >
-                                {s}
-                            </button>
-                        ))}
+                {/* Recommendations */}
+                {recommendations && recommendations.length > 0 && (
+                    <div className="mt-6">
+                        <p className="text-xs text-[var(--color-text-3)] mb-3 uppercase tracking-wider font-medium">✨ AI Personalized Cases</p>
+                        <div className="flex flex-col gap-2">
+                            {recommendations.map((rec: AIRecommendation, i: number) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => setTopic(rec.topic)}
+                                    disabled={isGenerating}
+                                    className="text-left p-3 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 hover:border-[var(--color-accent)] transition-all disabled:opacity-40"
+                                >
+                                    <div className="font-semibold text-sm text-[var(--color-text)] mb-0.5">{rec.topic}</div>
+                                    <div className="text-xs text-[var(--color-text-2)]">{rec.description}</div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Generating overlay */}
                 <AnimatePresence>
