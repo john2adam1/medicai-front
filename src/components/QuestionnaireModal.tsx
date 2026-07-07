@@ -5,8 +5,11 @@ import { useAuthStore } from '@/lib/auth-store';
 import { Loader2, Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { supabase } from '@/lib/supabase';
+import { useI18n } from '@/lib/i18n';
+
 export default function QuestionnaireModal() {
-    const { token, setRecommendations, recommendations } = useAuthStore();
+    const { user, setRecommendations, recommendations } = useAuthStore();
 
     const [courseLevel, setCourseLevel] = useState('');
     const [isDoctor, setIsDoctor] = useState(false);
@@ -35,25 +38,42 @@ export default function QuestionnaireModal() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!token) return;
+        if (!user) return;
 
         setError('');
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/profile/questionnaire`, {
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData.session?.access_token;
+
+            // 1. Update the Supabase user profile directly on frontend
+            const { error: profileError } = await supabase.from('profiles').update({
+                course_level: courseLevel,
+                is_doctor: isDoctor,
+                weak_topics: weakTopics
+            }).eq('id', user.id);
+
+            if (profileError) {
+                console.error("Profile update error:", profileError);
+                // We'll continue anyway to at least fetch recommendations, or you can throw
+            }
+
+            // 2. Fetch AI Recommendations
+            const res = await fetch(`${API}/recommendations`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     token,
                     course_level: courseLevel,
                     is_doctor: isDoctor,
-                    weak_topics: weakTopics
+                    weak_topics: weakTopics,
+                    language: useI18n.getState().lang
                 }),
             });
             const data = await res.json();
             if (!res.ok) {
-                throw new Error(data.error || 'Failed to submit questionnaire');
+                throw new Error(data.error || 'Failed to fetch recommendations');
             }
 
             // Expected data.recommendations format from the prompt: array of recommendations, e.g. { topic, description } OR strings. 
@@ -75,7 +95,7 @@ export default function QuestionnaireModal() {
     };
 
     // Only show if user is authenticated and has no recommendations yet
-    if (!token || recommendations) {
+    if (!user || recommendations) {
         return null; // we might want to let the parent handle this, but it's safe to return null here
     }
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { AIScenario, PatientStats, VisualState, ChatMessage, ActionResult } from './types';
+import { useI18n } from './i18n';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4002/api';
 
@@ -93,6 +94,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
                     topic: topic.trim(),
                     difficulty,
                     timeLimitMinutes: durationMinutes,
+                    language: useI18n.getState().lang,
                 }),
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -142,9 +144,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
                     healthBar: state.healthBar,
                     elapsedMinutes: state.elapsedMinutes,
                     actionHistory: state.actionHistory.slice(-5),
+                    language: useI18n.getState().lang,
                 }),
             });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${res.status}`);
+            }
             const result: ActionResult = await res.json();
 
             const aiMsg: ChatMessage = {
@@ -194,6 +200,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
                     healthBar: state.healthBar,
                     elapsedMinutes: state.elapsedMinutes,
                     actionHistory: state.actionHistory.slice(-5),
+                    language: useI18n.getState().lang,
                 }),
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

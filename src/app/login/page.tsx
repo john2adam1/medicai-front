@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
+import { supabase } from '@/lib/supabase';
 import { Heart, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -13,32 +14,29 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-    const setToken = useAuthStore((state) => state.setToken);
-
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4002/api';
+    const setUser = useAuthStore((state) => state.setUser);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         try {
-            const res = await fetch(`${API}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+            const { data, error: sbError } = await supabase.auth.signInWithPassword({
+                email,
+                password
             });
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to login');
+            if (sbError) throw sbError;
+            if (data.session) {
+                setUser(data.user);
+                router.push('/');
             }
-            setToken(data.token);
-            router.push('/');
         } catch (err: any) {
-            setError(err.message || 'An error occurred');
+            setError(err.message || 'An error occurred during login');
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-[var(--color-bg)] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -90,13 +88,13 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        <div>
+                        <div className="space-y-3">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50 transition-colors"
+                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[var(--color-bg)] bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50 transition-colors"
                             >
-                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign in'}
+                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Log in securely'}
                             </button>
                         </div>
                     </form>

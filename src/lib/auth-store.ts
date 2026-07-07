@@ -7,9 +7,9 @@ export interface AIRecommendation {
 }
 
 interface AuthState {
-    token: string | null;
+    user: any | null;
     recommendations: AIRecommendation[] | null;
-    setToken: (token: string | null) => void;
+    setUser: (user: any | null) => void;
     setRecommendations: (recommendations: AIRecommendation[] | null) => void;
     logout: () => void;
 }
@@ -17,11 +17,11 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
-            token: null,
+            user: null,
             recommendations: null,
-            setToken: (token) => set({ token }),
+            setUser: (user) => set({ user }),
             setRecommendations: (recommendations) => set({ recommendations }),
-            logout: () => set({ token: null, recommendations: null }),
+            logout: () => set({ user: null, recommendations: null }),
         }),
         {
             name: 'medicai-auth-storage', // name of item in storage
